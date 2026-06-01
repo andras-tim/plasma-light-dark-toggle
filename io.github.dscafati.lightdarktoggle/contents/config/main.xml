@@ -19,6 +19,12 @@
         <entry name="iconMode" type="String">
             <default>status</default>
         </entry>
+        <entry name="lightIcon" type="String">
+            <default>weather-clear</default>
+        </entry>
+        <entry name="darkIcon" type="String">
+            <default>weather-clear-night</default>
+        </entry>
     </group>
 </kcfg>
 

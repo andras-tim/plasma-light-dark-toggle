@@ -14,6 +14,12 @@ PlasmoidItem {
 
     property bool isDarkMode: false
 
+    // Icons are pulled from the user's active icon theme so they match it
+    // automatically. Defaults are freedesktop-standard names present in
+    // virtually every theme.
+    readonly property string lightIcon: Plasmoid.configuration.lightIcon || "weather-clear"
+    readonly property string darkIcon: Plasmoid.configuration.darkIcon || "weather-clear-night"
+
     Component.onCompleted: updateColorSchemeState()
 
     Plasmoid.contextualActions: [
@@ -83,10 +89,10 @@ PlasmoidItem {
                 const showTarget = Plasmoid.configuration.iconMode === "target"
                 if (showTarget) {
                     // Show target: if dark now, show sun (will switch to light)
-                    return root.isDarkMode ? "weather-clear" : "weather-clear-night"
+                    return root.isDarkMode ? root.lightIcon : root.darkIcon
                 } else {
                     // Show status: if dark now, show moon
-                    return root.isDarkMode ? "weather-clear-night" : "weather-clear"
+                    return root.isDarkMode ? root.darkIcon : root.lightIcon
                 }
             }
             active: mouseArea.containsMouse
@@ -137,7 +143,7 @@ PlasmoidItem {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: Kirigami.Units.iconSizes.huge
                 Layout.preferredHeight: Kirigami.Units.iconSizes.huge
-                source: root.isDarkMode ? "weather-clear-night" : "weather-clear"
+                source: root.isDarkMode ? root.darkIcon : root.lightIcon
             }
 
             Kirigami.Heading {
@@ -149,7 +155,7 @@ PlasmoidItem {
             QQC2.Button {
                 Layout.alignment: Qt.AlignHCenter
                 text: root.isDarkMode ? i18n("Switch to Light Colors") : i18n("Switch to Dark Colors")
-                icon.name: root.isDarkMode ? "weather-clear" : "weather-clear-night"
+                icon.name: root.isDarkMode ? root.lightIcon : root.darkIcon
                 onClicked: {
                     toggleColorScheme()
                 }
