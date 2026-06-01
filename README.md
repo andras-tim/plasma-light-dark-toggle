@@ -6,6 +6,8 @@
 
 A minimal KDE Plasma 6 panel widget that switches your color scheme between light and dark with a single click.
 
+Unlike switching Global Themes, this only applies a color scheme, so it leaves your Plasma style, icon theme, window decorations, cursors, and other desktop settings alone.
+
 ![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)
 ![Plasma](https://img.shields.io/badge/Plasma-6.0%2B-1d99f3.svg)
 
@@ -19,6 +21,7 @@ A minimal KDE Plasma 6 panel widget that switches your color scheme between ligh
 
 - One-click toggle between any two installed color schemes (defaults: `BreezeLight` / `BreezeDark`).
 - Pick which schemes count as "light" and "dark" in the widget settings.
+- Choose custom light and dark panel icons from your active icon theme.
 - Choose whether the panel icon shows the **current state** (moon when dark) or the **target action** (sun when dark, to indicate clicking will switch to light).
 - Exposes a `Toggle Color Scheme` action, so you can bind a global keyboard shortcut to it via *System Settings → Shortcuts*.
 
@@ -67,9 +70,11 @@ Right-click the widget → *Configure Light/Dark Color Scheme Toggle…*
 |---|---|
 | **Light Color Scheme** | The scheme used when toggling to "light". |
 | **Dark Color Scheme** | The scheme used when toggling to "dark". |
+| **Light Icon** | The icon shown for the light scheme. |
+| **Dark Icon** | The icon shown for the dark scheme. |
 | **Icon Mode** | `Show Current Status` — the icon mirrors what is active. `Show Target Action` — the icon shows what clicking will switch *to*. |
 
-The dropdowns are populated from `plasma-apply-colorscheme --list-schemes`, so any color scheme installed on your system is available.
+The color scheme dropdowns are populated from `plasma-apply-colorscheme --list-schemes`, so any color scheme installed on your system is available. Icons come from your active icon theme.
 
 ## Maintainers
 
