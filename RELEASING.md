@@ -64,4 +64,11 @@ Verify the widget from the panel and its configuration dialog.
 2. Create a GitHub Release from the tag.
 3. Attach `io.github.dscafati.lightdarktoggle-${version}.plasmoid` to the GitHub Release.
 4. Upload the same `.plasmoid` file to KDE Store.
-5. Include the GitHub repository as the source/homepage link on KDE Store.
+5. Update the KDE Store listing:
+
+   - Replace the main downloadable `.plasmoid` with the new version.
+   - Update the description if the release adds or changes user-facing features.
+   - Add a version changelog entry for the new release.
+   - Include the GitHub repository as the source/homepage link.
+
+6. After publishing, test the KDE Store download once the listing metadata has refreshed.
