@@ -71,6 +71,10 @@ Right-click the widget → *Configure Light/Dark Color Scheme Toggle…*
 
 The dropdowns are populated from `plasma-apply-colorscheme --list-schemes`, so any color scheme installed on your system is available.
 
+## Maintainers
+
+See [RELEASING.md](RELEASING.md) for the release and KDE Store upload checklist.
+
 ## Uninstall
 
 ```bash
