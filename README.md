@@ -23,6 +23,7 @@ Unlike switching Global Themes, this only applies a color scheme, so it leaves y
 - Pick which schemes count as "light" and "dark" in the widget settings.
 - Choose custom light and dark panel icons from your active icon theme.
 - Choose whether the panel icon shows the **current state** (moon when dark) or the **target action** (sun when dark, to indicate clicking will switch to light).
+- Stays in sync with the active color scheme. If you change schemes from System Settings, from a shortcut, or from a second copy of this widget, every instance updates its icon immediately.
 - Exposes a `Toggle Color Scheme` action, so you can bind a global keyboard shortcut to it via *System Settings → Shortcuts*.
 
 ## Requirements
