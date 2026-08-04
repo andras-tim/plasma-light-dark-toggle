@@ -13,7 +13,7 @@
         "Id": "io.github.dscafati.lightdarktoggle",
         "License": "GPL-2.0-or-later",
         "Name": "Light/Dark Color Scheme Toggle",
-        "Version": "1.1",
+        "Version": "1.2",
         "Website": "https://github.com/dscafati/plasma-light-dark-toggle"
     },
     "X-Plasma-API": "declarativeappletscript",
