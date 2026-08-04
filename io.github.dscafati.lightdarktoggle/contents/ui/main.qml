@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import QtQuick
+import QtQml
 import QtQuick.Layouts
 import QtQuick.Controls as QQC2
 import org.kde.plasma.plasmoid
@@ -22,6 +23,27 @@ PlasmoidItem {
 
     Component.onCompleted: updateColorSchemeState()
 
+    // Plasma exposes no "the active scheme name changed" signal, but every
+    // scheme switch repaints the palette, so the palette is our cue to re-read
+    // which scheme is now active. This keeps the icon in sync with changes made
+    // from System Settings or from another instance of this widget, not just
+    // with our own toggle.
+    Connections {
+        target: Kirigami.Theme
+
+        function onColorsChanged() {
+            resyncTimer.restart()
+        }
+    }
+
+    // Coalesces the bursts of colorsChanged that a single scheme switch emits,
+    // so we spawn one kreadconfig6 per switch instead of one per signal.
+    Timer {
+        id: resyncTimer
+        interval: 150
+        onTriggered: root.updateColorSchemeState()
+    }
+
     Plasmoid.contextualActions: [
         PlasmaCore.Action {
             text: i18n("Toggle Color Scheme")
@@ -32,7 +54,13 @@ PlasmoidItem {
 
     // Function to check current color scheme
     function updateColorSchemeState() {
-        colorSchemeChecker.exec("plasma-apply-colorscheme", ["--list-schemes"])
+        // Read the active scheme directly so this does not depend on the
+        // localized output of plasma-apply-colorscheme --list-schemes.
+        colorSchemeChecker.exec("kreadconfig6", [
+            "--file", "kdeglobals",
+            "--group", "General",
+            "--key", "ColorScheme"
+        ])
     }
 
     // DataSource to check current color scheme
@@ -42,26 +70,27 @@ PlasmoidItem {
         connectedSources: []
 
         onNewData: function(source, data) {
-            const output = data.stdout || ""
+            const currentColorScheme = (data.stdout || "").trim()
             const configuredDarkTheme = Plasmoid.configuration.darkTheme || "BreezeDark"
 
-            // Match the exact line for the configured dark theme followed by "(current"
-            isDarkMode = false
-            for (const line of output.split('\n')) {
-                const match = line.match(/^\s*\*\s+(.+?)\s+\(current/)
-                if (match && match[1] === configuredDarkTheme) {
-                    isDarkMode = true
-                    break
-                }
-            }
+            root.isDarkMode = currentColorScheme === configuredDarkTheme
 
             disconnectSource(source)
         }
 
         function exec(cmd, args) {
-            const fullCommand = args && args.length > 0 ? cmd + " " + args.join(" ") : cmd
-            connectSource(fullCommand)
+            connectSource(root.buildCommand(cmd, args))
         }
+    }
+
+    // Scheme names may contain spaces ("My Scheme"), so quote every argument:
+    // the executable engine splits the command with shell-style rules.
+    function buildCommand(cmd, args) {
+        if (!args || args.length === 0) {
+            return cmd
+        }
+        const quoted = args.map(arg => "'" + String(arg).replace(/'/g, "'\\''") + "'")
+        return cmd + " " + quoted.join(" ")
     }
 
     // Preferred representation is just the icon
@@ -184,15 +213,15 @@ PlasmoidItem {
 
         onNewData: function(source, data) {
             disconnectSource(source)
-            
-            // Update the color scheme state after switching
-            Qt.callLater(updateColorSchemeState)
+
+            // Update the color scheme state after switching. The palette watcher
+            // above usually beats us to it, but re-read anyway in case the two
+            // configured schemes share a palette.
+            resyncTimer.restart()
         }
 
         function exec(cmd, args) {
-            const fullCommand = args && args.length > 0 ? cmd + " " + args.join(" ") : cmd
-            connectSource(fullCommand)
+            connectSource(root.buildCommand(cmd, args))
         }
     }
 }
-
