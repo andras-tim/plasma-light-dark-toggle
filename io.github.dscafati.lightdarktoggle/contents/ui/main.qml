@@ -25,10 +25,10 @@ PlasmoidItem {
     property string darkLookAndFeel: "org.kde.breezedark.desktop"
 
     // Icons are pulled from the user's active icon theme so they match it
-    // automatically. Defaults are freedesktop-standard names present in
-    // virtually every theme.
-    readonly property string lightIcon: Plasmoid.configuration.lightIcon || "weather-clear"
-    readonly property string darkIcon: Plasmoid.configuration.darkIcon || "weather-clear-night"
+    // automatically. Defaults are the monochrome (symbolic) variants, like the
+    // other system tray icons.
+    readonly property string lightIcon: Plasmoid.configuration.lightIcon || "weather-clear-symbolic"
+    readonly property string darkIcon: Plasmoid.configuration.darkIcon || "weather-clear-night-symbolic"
 
     Component.onCompleted: updateThemeState()
 

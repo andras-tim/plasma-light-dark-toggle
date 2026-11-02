@@ -117,7 +117,7 @@ KCM.SimpleKCM {
             QQC2.Button {
                 text: i18n("Reset")
                 icon.name: "edit-undo"
-                onClicked: cfg_lightIcon = "weather-clear"
+                onClicked: cfg_lightIcon = "weather-clear-symbolic"
             }
         }
 
@@ -145,14 +145,14 @@ KCM.SimpleKCM {
             QQC2.Button {
                 text: i18n("Reset")
                 icon.name: "edit-undo"
-                onClicked: cfg_darkIcon = "weather-clear-night"
+                onClicked: cfg_darkIcon = "weather-clear-night-symbolic"
             }
         }
 
         QQC2.Label {
             Layout.fillWidth: true
             Layout.maximumWidth: Kirigami.Units.gridUnit * 18
-            text: i18n("Icons come from your active icon theme and are recolored automatically. The defaults (weather-clear / weather-clear-night) are freedesktop-standard names available in nearly every theme.")
+            text: i18n("Icons come from your active icon theme and are recolored automatically. The defaults (weather-clear-symbolic / weather-clear-night-symbolic) are monochrome, like the other icons in the system tray.")
             wrapMode: Text.WordWrap
             font: Kirigami.Theme.smallFont
             opacity: 0.7

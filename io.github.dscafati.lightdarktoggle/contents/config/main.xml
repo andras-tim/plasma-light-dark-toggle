@@ -14,10 +14,10 @@
             <default>status</default>
         </entry>
         <entry name="lightIcon" type="String">
-            <default>weather-clear</default>
+            <default>weather-clear-symbolic</default>
         </entry>
         <entry name="darkIcon" type="String">
-            <default>weather-clear-night</default>
+            <default>weather-clear-night-symbolic</default>
         </entry>
     </group>
 </kcfg>
