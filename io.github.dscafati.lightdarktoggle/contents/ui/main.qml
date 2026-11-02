@@ -9,8 +9,6 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.kirigami as Kirigami
-import org.kde.kcmutils as KCMUtils
-import org.kde.config as KConfig
 import org.kde.plasma.workspace.components as WorkspaceComponents
 
 PlasmoidItem {
@@ -67,19 +65,6 @@ PlasmoidItem {
             text: i18n("Toggle Light/Dark Theme")
             icon.name: "preferences-desktop-theme-global"
             onTriggered: root.toggleTheme()
-        },
-        // Plasma holds the theme settings, these open its pages
-        PlasmaCore.Action {
-            text: i18n("Choose Light and Dark Themes...")
-            icon.name: "preferences-desktop-theme-global"
-            visible: KConfig.KAuthorized.authorizeControlModule("kcm_lookandfeel")
-            onTriggered: KCMUtils.KCMLauncher.openSystemSettings("kcm_lookandfeel")
-        },
-        PlasmaCore.Action {
-            text: i18n("Configure Day-Night Cycle...")
-            icon.name: "lighttable"
-            visible: KConfig.KAuthorized.authorizeControlModule("kcm_nighttime")
-            onTriggered: KCMUtils.KCMLauncher.openSystemSettings("kcm_nighttime")
         }
     ]
 
