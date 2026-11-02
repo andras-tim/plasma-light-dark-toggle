@@ -18,7 +18,7 @@
         "Id": "io.github.dscafati.lightdarktoggle",
         "License": "GPL-2.0-or-later",
         "Name": "Light/Dark Theme Toggle",
-        "Version": "1.2-dras.3",
+        "Version": "1.2-dras.4",
         "Website": "https://github.com/andras-tim/plasma-light-dark-toggle"
     },
     "X-Plasma-API": "declarativeappletscript",
