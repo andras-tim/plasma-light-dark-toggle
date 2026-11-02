@@ -9,6 +9,8 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.kirigami as Kirigami
+import org.kde.kcmutils as KCMUtils
+import org.kde.config as KConfig
 
 PlasmoidItem {
     id: root
@@ -20,10 +22,10 @@ PlasmoidItem {
     property string darkLookAndFeel: "org.kde.breezedark.desktop"
 
     // Icons are pulled from the user's active icon theme so they match it
-    // automatically. Defaults are freedesktop-standard names present in
+    // automatically. These are freedesktop-standard names present in
     // virtually every theme.
-    readonly property string lightIcon: Plasmoid.configuration.lightIcon || "weather-clear"
-    readonly property string darkIcon: Plasmoid.configuration.darkIcon || "weather-clear-night"
+    readonly property string lightIcon: "weather-clear"
+    readonly property string darkIcon: "weather-clear-night"
 
     Component.onCompleted: updateThemeState()
 
@@ -53,6 +55,19 @@ PlasmoidItem {
             text: i18n("Toggle Light/Dark Theme")
             icon.name: "preferences-desktop-theme-global"
             onTriggered: root.toggleTheme()
+        },
+        // The settings live in System Settings, the widget has none of its own
+        PlasmaCore.Action {
+            text: i18n("Choose Light and Dark Themes...")
+            icon.name: "preferences-desktop-theme-global"
+            visible: KConfig.KAuthorized.authorizeControlModule("kcm_lookandfeel")
+            onTriggered: KCMUtils.KCMLauncher.openSystemSettings("kcm_lookandfeel")
+        },
+        PlasmaCore.Action {
+            text: i18n("Configure Day-Night Cycle...")
+            icon.name: "lighttable"
+            visible: KConfig.KAuthorized.authorizeControlModule("kcm_nighttime")
+            onTriggered: KCMUtils.KCMLauncher.openSystemSettings("kcm_nighttime")
         }
     ]
 
@@ -122,16 +137,8 @@ PlasmoidItem {
         Kirigami.Icon {
             id: icon
             anchors.fill: parent
-            source: {
-                const showTarget = Plasmoid.configuration.iconMode === "target"
-                if (showTarget) {
-                    // Show target: if dark now, show sun (will switch to light)
-                    return root.isDarkMode ? root.lightIcon : root.darkIcon
-                } else {
-                    // Show status: if dark now, show moon
-                    return root.isDarkMode ? root.darkIcon : root.lightIcon
-                }
-            }
+            // Show status: if dark now, show moon
+            source: root.isDarkMode ? root.darkIcon : root.lightIcon
             active: mouseArea.containsMouse
 
             // Smooth transition when icon changes
