@@ -24,13 +24,22 @@ style), which has no color scheme of its own, is applied whole.
 
 - One-click switch between the light and the dark global theme chosen in *System Settings > Global Theme*.
 - Leaves the automatic day-night switching on: a manual switch holds until the next day-night transition.
-- The icon shows the active theme (sun or moon) and follows switches made anywhere else.
-- The context menu opens the two System Settings pages that hold the configuration:
+- Stays in sync with the active theme: a switch made anywhere else updates the icon too.
+- Choose custom light and dark panel icons from your active icon theme, and whether the icon shows the **current
+  state** (moon when dark) or the **target action** (sun when dark).
+- The context menu and the widget settings open the two System Settings pages that hold the theme configuration.
 
-| Menu entry | System Settings page | What it sets |
-|---|---|---|
-| **Choose Light and Dark Themes...** | Global Theme (`kcm_lookandfeel`) | the light and the dark theme, *Switch to Dark Mode at Night* |
-| **Configure Day-Night Cycle...** | Day-Night Cycle (`kcm_nighttime`) | when day and night begin |
+## Configuration
+
+Right-click the widget → *Configure Light/Dark Theme Toggle…*
+
+| Setting | Description |
+|---|---|
+| **Light and dark theme** | Button: opens *Global Theme* (`kcm_lookandfeel`), where the light and the dark theme are chosen and *Switch to Dark Mode at Night* is turned on. Also in the context menu: *Choose Light and Dark Themes...* |
+| **Day and night times** | Button: opens *Day-Night Cycle* (`kcm_nighttime`), when day and night begin. Also in the context menu: *Configure Day-Night Cycle...* |
+| **Icon Mode** | `Show Current Status`: the icon mirrors what is active. `Show Target Action`: the icon shows what clicking will switch *to*. |
+| **Light Icon** | The icon shown for the light theme. |
+| **Dark Icon** | The icon shown for the dark theme. |
 
 ## Requirements
 
