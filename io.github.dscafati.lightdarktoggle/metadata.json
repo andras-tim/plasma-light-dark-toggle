@@ -8,15 +8,18 @@
             }
         ],
         "Category": "Utilities",
-        "Description": "One-click toggle between light and dark color schemes.",
+        "Description": "One-click switch between the light and the dark global theme.",
+        "EnabledByDefault": true,
         "Icon": "contrast",
         "Id": "io.github.dscafati.lightdarktoggle",
         "License": "GPL-2.0-or-later",
-        "Name": "Light/Dark Color Scheme Toggle",
-        "Version": "1.2",
-        "Website": "https://github.com/dscafati/plasma-light-dark-toggle"
+        "Name": "Light/Dark Theme Toggle",
+        "Version": "1.2-dras.1",
+        "Website": "https://github.com/andras-tim/plasma-light-dark-toggle"
     },
     "X-Plasma-API": "declarativeappletscript",
     "X-Plasma-MainScript": "ui/main.qml",
-    "X-Plasma-API-Minimum-Version": "6.0"
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-NotificationArea": "true",
+    "X-Plasma-NotificationAreaCategory": "Hardware"
 }

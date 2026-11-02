@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Install the Light/Dark Color Scheme Toggle Plasma widget
+# Install the Light/Dark Theme Toggle Plasma widget
 
 WIDGET_NAME="io.github.dscafati.lightdarktoggle"
 INSTALL_DIR="$HOME/.local/share/plasma/plasmoids"
 
-echo "Installing Light/Dark Color Scheme Toggle Plasma widget..."
+echo "Installing Light/Dark Theme Toggle Plasma widget..."
 
 # Create installation directory if it doesn't exist
 mkdir -p "$INSTALL_DIR"
@@ -28,7 +28,7 @@ echo ""
 echo "To add it to your panel:"
 echo "  1. Right-click on your panel"
 echo "  2. Select 'Add Widgets...'"
-echo "  3. Search for 'Light/Dark Color Scheme Toggle'"
+echo "  3. Search for 'Light/Dark Theme Toggle'"
 echo "  4. Drag it to your panel or desktop"
 echo ""
 echo "You may need to restart Plasma for changes to take effect:"
