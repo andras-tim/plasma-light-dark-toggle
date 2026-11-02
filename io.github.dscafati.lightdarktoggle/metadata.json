@@ -5,6 +5,10 @@
             {
                 "Email": "dscafati@gmail.com",
                 "Name": "Diego Scafati"
+            },
+            {
+                "Name": "Andras Tim",
+                "Website": "https://github.com/andras-tim"
             }
         ],
         "Category": "Utilities",
@@ -14,7 +18,7 @@
         "Id": "io.github.dscafati.lightdarktoggle",
         "License": "GPL-2.0-or-later",
         "Name": "Light/Dark Theme Toggle",
-        "Version": "1.2-dras.1",
+        "Version": "1.2-dras.2",
         "Website": "https://github.com/andras-tim/plasma-light-dark-toggle"
     },
     "X-Plasma-API": "declarativeappletscript",

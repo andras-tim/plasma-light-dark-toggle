@@ -4,8 +4,9 @@
 
 This repo is a fork of [dscafati/plasma-light-dark-toggle](https://github.com/dscafati/plasma-light-dark-toggle). The
 work branch is `dras`, on top of upstream `master` (`v1.2`). The fork changes the widget's purpose: upstream switches
-color schemes, the fork switches global themes and keeps no settings of its own (Plasma has them). An upstream change
-is ported by hand, not merged; check what upstream did since the last port:
+color schemes, the fork switches global themes; Plasma holds the theme settings, the widget only its icon settings and
+buttons to Plasma's pages. An upstream change is ported by hand, not merged; check what upstream did since the last
+port:
 
 ```bash
 git fetch upstream --tags
