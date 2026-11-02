@@ -16,6 +16,8 @@ PlasmoidItem {
     id: root
 
     property bool isDarkMode: false
+    // Plasma switches the theme by the time of day ("Switch to Dark Mode at Night")
+    property bool isAutomatic: false
 
     // The light and dark global themes, as chosen in System Settings > Global Theme
     property string lightLookAndFeel: "org.kde.breeze.desktop"
@@ -50,6 +52,15 @@ PlasmoidItem {
         onTriggered: root.updateThemeState()
     }
 
+    // Turning the automatic switching on or off does not repaint the palette,
+    // and QML gets no config change signal, so re-read it now and then.
+    Timer {
+        interval: 15000
+        running: true
+        repeat: true
+        onTriggered: root.updateThemeState()
+    }
+
     Plasmoid.contextualActions: [
         PlasmaCore.Action {
             text: i18n("Toggle Light/Dark Theme")
@@ -71,13 +82,14 @@ PlasmoidItem {
         }
     ]
 
-    // Reads the active global theme and the light/dark pair, one per line.
-    // The defaults are Plasma's own for unset keys.
+    // Reads the active global theme, the light/dark pair and the automatic
+    // mode, one per line. The defaults are Plasma's own for unset keys.
     function updateThemeState() {
         const keys = [
             ["LookAndFeelPackage", "org.kde.breeze.desktop"],
             ["DefaultLightLookAndFeel", "org.kde.breeze.desktop"],
-            ["DefaultDarkLookAndFeel", "org.kde.breezedark.desktop"]
+            ["DefaultDarkLookAndFeel", "org.kde.breezedark.desktop"],
+            ["AutomaticLookAndFeel", "false"]
         ]
         themeChecker.connectSource(keys.map(key => root.buildCommand("kreadconfig6", [
             "--file", "kdeglobals",
@@ -96,10 +108,11 @@ PlasmoidItem {
         onNewData: function(source, data) {
             const lines = (data.stdout || "").trim().split("\n")
 
-            if (lines.length === 3) {
+            if (lines.length === 4) {
                 root.lightLookAndFeel = lines[1]
                 root.darkLookAndFeel = lines[2]
                 root.isDarkMode = lines[0] === root.darkLookAndFeel
+                root.isAutomatic = lines[3] === "true"
             }
 
             disconnectSource(source)
@@ -121,7 +134,8 @@ PlasmoidItem {
 
     // Tooltip
     toolTipMainText: i18n("Light/Dark Theme Toggle")
-    toolTipSubText: isDarkMode ? i18n("Switch to Light Theme") : i18n("Switch to Dark Theme")
+    toolTipSubText: (isDarkMode ? i18n("Switch to Light Theme") : i18n("Switch to Dark Theme"))
+        + (isAutomatic ? "\n" + i18n("Automatic day-night switching is on, a manual switch holds until the next transition") : "")
 
     // Compact representation (icon in panel)
     compactRepresentation: Item {
@@ -172,10 +186,25 @@ PlasmoidItem {
             }
         }
 
+        // Badge in the bottom-right corner while the automatic mode is on
+        Text {
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            visible: root.isAutomatic
+            text: i18nc("Icon badge: automatic day-night switching is on", "A")
+            font.bold: true
+            font.pixelSize: Math.max(6, Math.round(parent.height * 0.5))
+            color: Kirigami.Theme.textColor
+            style: Text.Outline
+            styleColor: Kirigami.Theme.backgroundColor
+        }
+
         MouseArea {
             id: mouseArea
             anchors.fill: parent
             hoverEnabled: true
+            // Up to date before the tooltip shows
+            onContainsMouseChanged: if (containsMouse) resyncTimer.restart()
             onClicked: {
                 toggleTheme()
             }

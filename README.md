@@ -25,6 +25,7 @@ style), which has no color scheme of its own, is applied whole.
 - One-click switch between the light and the dark global theme chosen in *System Settings > Global Theme*.
 - Leaves the automatic day-night switching on: a manual switch holds until the next day-night transition.
 - Stays in sync with the active theme: a switch made anywhere else updates the icon too.
+- An "A" in the icon's bottom-right corner shows that the automatic day-night switching is on.
 - Choose custom light and dark panel icons from your active icon theme, and whether the icon shows the **current
   state** (moon when dark) or the **target action** (sun when dark).
 - The context menu and the widget settings open the two System Settings pages that hold the theme configuration.

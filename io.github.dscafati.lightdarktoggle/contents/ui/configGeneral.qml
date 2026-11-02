@@ -58,7 +58,7 @@ KCM.SimpleKCM {
         QQC2.Label {
             Layout.fillWidth: true
             Layout.maximumWidth: Kirigami.Units.gridUnit * 18
-            text: i18n("Automatic switching by the time of day is the \"Switch to Dark Mode at Night\" option of the Global Theme page.")
+            text: i18n("Automatic switching by the time of day is the \"Switch to Dark Mode at Night\" option of the Global Theme page. While it is on, the icon shows an \"A\".")
             wrapMode: Text.WordWrap
             font: Kirigami.Theme.smallFont
             opacity: 0.7
