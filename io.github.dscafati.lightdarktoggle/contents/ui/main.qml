@@ -15,17 +15,21 @@ PlasmoidItem {
 
     property bool isDarkMode: false
 
+    // The light and dark global themes, as chosen in System Settings > Global Theme
+    property string lightLookAndFeel: "org.kde.breeze.desktop"
+    property string darkLookAndFeel: "org.kde.breezedark.desktop"
+
     // Icons are pulled from the user's active icon theme so they match it
     // automatically. Defaults are freedesktop-standard names present in
     // virtually every theme.
     readonly property string lightIcon: Plasmoid.configuration.lightIcon || "weather-clear"
     readonly property string darkIcon: Plasmoid.configuration.darkIcon || "weather-clear-night"
 
-    Component.onCompleted: updateColorSchemeState()
+    Component.onCompleted: updateThemeState()
 
-    // Plasma exposes no "the active scheme name changed" signal, but every
-    // scheme switch repaints the palette, so the palette is our cue to re-read
-    // which scheme is now active. This keeps the icon in sync with changes made
+    // Plasma exposes no "the active global theme changed" signal, but every
+    // theme switch repaints the palette, so the palette is our cue to re-read
+    // which theme is now active. This keeps the icon in sync with changes made
     // from System Settings or from another instance of this widget, not just
     // with our own toggle.
     Connections {
@@ -36,54 +40,58 @@ PlasmoidItem {
         }
     }
 
-    // Coalesces the bursts of colorsChanged that a single scheme switch emits,
-    // so we spawn one kreadconfig6 per switch instead of one per signal.
+    // Coalesces the bursts of colorsChanged that a single theme switch emits,
+    // so we read kdeglobals once per switch instead of once per signal.
     Timer {
         id: resyncTimer
         interval: 150
-        onTriggered: root.updateColorSchemeState()
+        onTriggered: root.updateThemeState()
     }
 
     Plasmoid.contextualActions: [
         PlasmaCore.Action {
-            text: i18n("Toggle Color Scheme")
+            text: i18n("Toggle Light/Dark Theme")
             icon.name: "preferences-desktop-theme-global"
-            onTriggered: root.toggleColorScheme()
+            onTriggered: root.toggleTheme()
         }
     ]
 
-    // Function to check current color scheme
-    function updateColorSchemeState() {
-        // Read the active scheme directly so this does not depend on the
-        // localized output of plasma-apply-colorscheme --list-schemes.
-        colorSchemeChecker.exec("kreadconfig6", [
+    // Reads the active global theme and the light/dark pair, one per line.
+    // The defaults are Plasma's own for unset keys.
+    function updateThemeState() {
+        const keys = [
+            ["LookAndFeelPackage", "org.kde.breeze.desktop"],
+            ["DefaultLightLookAndFeel", "org.kde.breeze.desktop"],
+            ["DefaultDarkLookAndFeel", "org.kde.breezedark.desktop"]
+        ]
+        themeChecker.connectSource(keys.map(key => root.buildCommand("kreadconfig6", [
             "--file", "kdeglobals",
-            "--group", "General",
-            "--key", "ColorScheme"
-        ])
+            "--group", "KDE",
+            "--key", key[0],
+            "--default", key[1]
+        ])).join("; "))
     }
 
-    // DataSource to check current color scheme
+    // DataSource to check the current global theme
     Plasma5Support.DataSource {
-        id: colorSchemeChecker
+        id: themeChecker
         engine: "executable"
         connectedSources: []
 
         onNewData: function(source, data) {
-            const currentColorScheme = (data.stdout || "").trim()
-            const configuredDarkTheme = Plasmoid.configuration.darkTheme || "BreezeDark"
+            const lines = (data.stdout || "").trim().split("\n")
 
-            root.isDarkMode = currentColorScheme === configuredDarkTheme
+            if (lines.length === 3) {
+                root.lightLookAndFeel = lines[1]
+                root.darkLookAndFeel = lines[2]
+                root.isDarkMode = lines[0] === root.darkLookAndFeel
+            }
 
             disconnectSource(source)
         }
-
-        function exec(cmd, args) {
-            connectSource(root.buildCommand(cmd, args))
-        }
     }
 
-    // Scheme names may contain spaces ("My Scheme"), so quote every argument:
+    // Names may contain spaces ("My Theme"), so quote every argument:
     // the executable engine splits the command with shell-style rules.
     function buildCommand(cmd, args) {
         if (!args || args.length === 0) {
@@ -97,8 +105,8 @@ PlasmoidItem {
     preferredRepresentation: compactRepresentation
 
     // Tooltip
-    toolTipMainText: i18n("Light/Dark Color Scheme Toggle")
-    toolTipSubText: isDarkMode ? i18n("Switch to Light Colors") : i18n("Switch to Dark Colors")
+    toolTipMainText: i18n("Light/Dark Theme Toggle")
+    toolTipSubText: isDarkMode ? i18n("Switch to Light Theme") : i18n("Switch to Dark Theme")
 
     // Compact representation (icon in panel)
     compactRepresentation: Item {
@@ -154,7 +162,7 @@ PlasmoidItem {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-                toggleColorScheme()
+                toggleTheme()
             }
         }
     }
@@ -177,32 +185,27 @@ PlasmoidItem {
 
             Kirigami.Heading {
                 Layout.alignment: Qt.AlignHCenter
-                text: root.isDarkMode ? i18n("Dark Colors Active") : i18n("Light Colors Active")
+                text: root.isDarkMode ? i18n("Dark Theme Active") : i18n("Light Theme Active")
                 level: 2
             }
 
             QQC2.Button {
                 Layout.alignment: Qt.AlignHCenter
-                text: root.isDarkMode ? i18n("Switch to Light Colors") : i18n("Switch to Dark Colors")
+                text: root.isDarkMode ? i18n("Switch to Light Theme") : i18n("Switch to Dark Theme")
                 icon.name: root.isDarkMode ? root.lightIcon : root.darkIcon
                 onClicked: {
-                    toggleColorScheme()
+                    toggleTheme()
                 }
             }
         }
     }
 
-    // Function to toggle between dark and light color schemes
-    function toggleColorScheme() {
-        // Switch only color schemes, not the entire theme
-        const lightColorScheme = Plasmoid.configuration.lightTheme || "BreezeLight"
-        const darkColorScheme = Plasmoid.configuration.darkTheme || "BreezeDark"
-        
-        const targetColorScheme = root.isDarkMode ? lightColorScheme : darkColorScheme
-        
-        // Execute the command to switch color schemes
-        // Use plasma-apply-colorscheme for Plasma 6
-        executable.exec("plasma-apply-colorscheme", [targetColorScheme])
+    // Switches the global theme, so a theme like Breeze Twilight (light colors,
+    // dark Plasma style) is applied whole. --keep-auto leaves the automatic
+    // day-night switching on: it takes over again at the next transition.
+    function toggleTheme() {
+        const target = root.isDarkMode ? root.lightLookAndFeel : root.darkLookAndFeel
+        executable.exec("plasma-apply-lookandfeel", ["--keep-auto", "--apply", target])
     }
 
     // DataEngine for executing commands (Plasma 6 uses Plasma5Support)
@@ -214,9 +217,9 @@ PlasmoidItem {
         onNewData: function(source, data) {
             disconnectSource(source)
 
-            // Update the color scheme state after switching. The palette watcher
+            // Update the theme state after switching. The palette watcher
             // above usually beats us to it, but re-read anyway in case the two
-            // configured schemes share a palette.
+            // themes share a palette.
             resyncTimer.restart()
         }
 
