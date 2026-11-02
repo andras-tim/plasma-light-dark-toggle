@@ -11,6 +11,7 @@ import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCMUtils
 import org.kde.config as KConfig
+import org.kde.plasma.workspace.components as WorkspaceComponents
 
 PlasmoidItem {
     id: root
@@ -186,17 +187,17 @@ PlasmoidItem {
             }
         }
 
-        // Badge in the bottom-right corner while the automatic mode is on
-        Text {
-            anchors.right: parent.right
+        // Badge while the automatic mode is on, placed like Plasma's
+        // DefaultCompactRepresentation places PlasmoidItem.badgeText
+        Loader {
             anchors.bottom: parent.bottom
-            visible: root.isAutomatic
-            text: i18nc("Icon badge: automatic day-night switching is on", "A")
-            font.bold: true
-            font.pixelSize: Math.max(6, Math.round(parent.height * 0.5))
-            color: Kirigami.Theme.textColor
-            style: Text.Outline
-            styleColor: Kirigami.Theme.backgroundColor
+            anchors.right: parent.right
+            active: root.isAutomatic
+
+            sourceComponent: WorkspaceComponents.BadgeOverlay {
+                text: i18nc("Icon badge: automatic day-night switching is on", "A")
+                icon: compactRoot
+            }
         }
 
         MouseArea {
